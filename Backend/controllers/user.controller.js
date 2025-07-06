@@ -51,3 +51,13 @@ export const loginUserController = async (req, res) => {
       user: req.user,
     });
   };
+
+  export const logoutController = async (req, res) => {
+    try {
+      const token = req.cookies.token || req.headers.authorization.split(' ')[1];
+      await redisClient.set(token, 'logout', 'EX', 60*60*24); // Set token in Redis with 1 hour expiration
+      res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error logging out' });
+    }
+  }
