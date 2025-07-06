@@ -1,7 +1,6 @@
 import { validationResult } from 'express-validator';
 import * as userService from '../services/user.service.js';
 import  usermodel from '../models/user.model.js';
-import { urlencoded } from 'express';
 
 export const createUserController = async (req, res) => {
   const errors = validationResult(req);
@@ -47,3 +46,9 @@ export const loginUserController = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+  export const getUserProfileController = async (req, res) => {
+    console.log(req.user)
+    res.status(200).json({
+      user: req.user,
+    });
+  };

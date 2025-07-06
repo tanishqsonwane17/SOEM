@@ -1,14 +1,15 @@
 import dotenv from 'dotenv';
 dotenv.config(); 
-
 import express from 'express';
 import cors from 'cors';
+import cookieParser  from 'cookie-parser'
 import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
 import dbConnection from './db/db.js';
 
 const app = express();
 
+app.use(cookieParser());
 dbConnection();
 
 app.use(cors());
