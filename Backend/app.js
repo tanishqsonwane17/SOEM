@@ -6,7 +6,7 @@ import cookieParser  from 'cookie-parser'
 import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
 import dbConnection from './db/db.js';
-
+import projectRoutes from './routes/project.routes.js';
 const app = express();
 
 app.use(cookieParser());
@@ -22,5 +22,6 @@ app.use('/users', userRoutes);
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+app.use('/projects', projectRoutes);
 
 export default app;
