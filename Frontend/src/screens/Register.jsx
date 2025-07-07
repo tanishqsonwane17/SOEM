@@ -1,11 +1,14 @@
 import React,{useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useContext } from 'react'
+import { UserContext } from '../context/User.contenxt'
 import axios from '../config/Axios'
 import { useNavigate } from 'react-router-dom'
 const Register = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+    const { setUser } = useContext(UserContext)
   function handleSubmit(e) {
     e.preventDefault()
     axios.post('/users/register', {
@@ -13,6 +16,8 @@ const Register = () => {
       password
     }).then((response) => {
       console.log(response.data)
+      localStorage.setItem('token', response.data.token)
+        setUser(response.data.user)
       navigate('/')
     }).catch((error) => {
       console.error(error)
