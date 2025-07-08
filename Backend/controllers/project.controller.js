@@ -34,3 +34,23 @@ export const createProject = async (req, res) => {
     }
 
 }
+export const getAllProjects = async (req, res) => {
+    try {
+        const loggdInUser = await UserModel.findOne({
+            email: req.user.email                       
+        });
+
+        const allUserProject = await ProjectService.getAllProjects(loggdInUser._id);
+
+        return res.status(200).json({
+            message: "All projects fetched successfully",
+            projects: allUserProject
+        });
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        res.status(500).json({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}

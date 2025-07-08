@@ -9,5 +9,9 @@ router.post('/create',
 body('name').notEmpty().withMessage('Project name is required'),
 ProjectController.createProject
 )
+router.get('/all',
+    authMiddleware.authUser,
+    ProjectController.getAllProjects
+)
 
 export default router;

@@ -16,3 +16,12 @@ export const createProject = async ({
     });
     return project
 }
+export const getAllProjects = async (userId) => {
+    if(!userId){
+        throw new Error("User ID is required");
+    }
+    const projects = await ProjectModel.find({
+        users: userId
+    })
+    return projects
+}
