@@ -54,3 +54,37 @@ export const getAllProjects = async (req, res) => {
         });
     }
 }
+export const addUserToProject = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    try{
+        const { projectId, users } = req.body;
+        const loggdInUser = await UserModel.findOne({
+            email:req.user.email
+        })
+        const project = await ProjectService.addUserToProject({
+            projectId,
+            users,
+            userId:loggdInUser._id
+        })
+        return res.status(200).json({
+            project,
+        })
+
+    }
+    catch(err){
+        console.error("Error adding user to project:", err);
+        res.status(500).json({
+            message: "Internal server error",
+            error: err.message
+        });
+    }
+
+}
+
+     
+     
+     
+    
