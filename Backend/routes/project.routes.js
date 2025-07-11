@@ -23,5 +23,8 @@ router.put('/add-user',
     .isArray({ min: 1 }).withMessage('Users must be a non-empty array')
     .custom((arr) => arr.every(u => typeof u === 'string')).withMessage('Each user must be a string')
 )
-
+router.get('/get-project/:projectId',
+    authMiddleware.authUser,
+    ProjectController.getProjectById
+)
 export default router;

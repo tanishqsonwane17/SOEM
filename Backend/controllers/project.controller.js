@@ -83,6 +83,24 @@ export const addUserToProject = async (req, res) => {
     }
 
 }
+export const getProjectById = async (req, res) => {
+    const { projectId } = req.params;
+    const project = await ProjectService.getProjectById(projectId);
+
+    try{
+          return res.status(200).json({
+       project
+   });
+
+    }
+    catch(err){
+        console.error("Error fetching project by ID:", err);
+        res.status(500).json({
+            message: "Internal server error",
+            error: err.message
+        });
+    }
+}
 
      
      

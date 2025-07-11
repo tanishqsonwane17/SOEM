@@ -1,40 +1,67 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect} from 'react'
 import { UserContext } from '../context/User.contenxt'
 import { FaLink } from "react-icons/fa6"
-import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../config/Axios'
+import { MdPeopleAlt } from "react-icons/md";
+
 const Home = () => {
   const { user } = useContext(UserContext)
   const [isModal, setisModal] = useState(false)
-  const [projectName, setprojectName] = useState('') // empty string for controlled input
+  const [projectName, setprojectName] = useState('') 
+  const [project, setproject] = useState([])
+  const navigate = useNavigate()
+useEffect(() => {
+  axiosInstance.get('/projects/all')
+    .then((res) => {
+      setproject(res.data.projects)
+    })
+    .catch((err) => {
+      console.error("Error fetching projects:", err)
+    })
+}, [])
 
   function createProject(e) {
     e.preventDefault()
     console.log({projectName})
-    // setisModal(false) 
-    // setprojectName('')
     axiosInstance.post('/projects/create', {
       name:projectName
     }).then((res)=>{
-      console.log(res)
     }).catch((err)=>{
-      console.log(err)
+      console.log("Error creating project:", err)
     })
   }
 
   return (
     <>
       <main className='p-4'>
-        <button className="projects">
-          <div
+        <div className="projects flex gap-4 flex-wrap">
+          <button
             onClick={() => setisModal(true)}
             className="project p-4 flex gap-2 border border-slate-400 rounded-md cursor-pointer"
           >
             <span className='text-md'>New Project</span>
             <FaLink />
-          </div>
-        </button>
-
+          </button>
+          {
+            project?.map((item) => (
+              <div key={item._id}
+              onClick={() => navigate(`/project`,{
+                state:{
+                  project
+                }
+              })}
+              className="
+              project p-4 flex-col flex gap-2 border hover:bg-gray-100 border-slate-400 rounded-md  cursor-pointer
+              ">
+                <h2 className='text-semibold '>{item.name}</h2>
+                <div className='flex gap-2'>
+                <MdPeopleAlt className='mt-1 text-sm'/><small className='text-sm'>Collaborators:</small> <span className='text-md'>{ item.users?.length || 0 }</span>
+                </div>
+              </div>
+            ))
+          }
+        </div>
         {isModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -54,7 +81,7 @@ const Home = () => {
                   <button
                     type="button"
                     className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                    onClick={() => setisModal(false)} // ✅ fixed here
+                    onClick={() => setisModal(false)} 
                   >
                     Cancel
                   </button>
