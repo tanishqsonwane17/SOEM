@@ -97,7 +97,7 @@ const Project = () => {
         </div>
 
         {/* Side Panel */}
-        <div className={`absolute top-0 left-0 h-full w-full bg-slate-400 z-50 transition-transform duration-300 ease-in-out ${issidePanelOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`absolute top-0 left-0 h-full w-full bg-slate-300 z-50 transition-transform duration-300 ease-in-out ${issidePanelOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <header className="flex justify-between p-2 bg-slate-200  items-center">
             <h1 className='text-sm font-bold text-gray-700 uppercase'>Collaborator</h1>
             <button className='cursor-pointer' onClick={() => setissidePanelOpen(false)}>
@@ -112,7 +112,7 @@ const Project = () => {
               <div className='h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center'>
                 <i className="ri-user-3-fill text-gray-600"></i>
               </div>
-              <h2 className='font-semibold text-md text-white'>{users.email}</h2>
+              <h2 className='font-semibold text-md text-black'>{users.email}</h2>
             </div>
                 )
               })
