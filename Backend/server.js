@@ -1,20 +1,27 @@
+// Load environment variables
 import dotenv from 'dotenv';
 dotenv.config();
+
 import app from './app.js';
 import http from 'http';
-import {Server} from 'socket.io'
-import jwt from 'jsonwebtoken'
+import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+
+import projectModel from './models/project.model.js';
+import { generateContent } from './services/ai.service.js';
+
 const PORT = process.env.PORT;
-import projectModel from './models/project.model.js'
 
-const server  = http.createServer(app)
-const io = new Server(server,{
-  cors:{
-    origin:'*'
-  }
-})
+// Create HTTP server and Socket.io instance
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
 
+// Middleware for authentication and project validation
 io.use(async (socket, next) => {
   try {
     const authHeader = socket.handshake.headers.authorization;
@@ -25,39 +32,96 @@ io.use(async (socket, next) => {
       return next(new Error('Invalid or missing projectId'));
     }
 
-    socket.project = await projectModel.findById(projectId); 
+    const project = await projectModel.findById(projectId);
+    if (!project) {
+      return next(new Error('Project not found'));
+    }
 
     if (!token) {
       return next(new Error('Authentication token missing'));
     }
 
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    if (!user) {
-      return next(new Error('Authentication Error'));
+    let user;
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      return next(new Error('Invalid token'));
     }
 
     socket.user = user;
+    socket.project = project;
     next();
   } catch (err) {
+    console.error("Middleware error:", err.message || err);
     next(err);
   }
 });
 
-io.on('connection', socket => {
-   socket.roomId =  socket.project._id.toString()
-  socket.join(socket.roomId)
-  socket.on('project-message',data=>{
-    socket.broadcast.to(socket.roomId).emit('project-message',data)
-  })
-  socket.on('event', data => { 
-  
+// Socket event handling
+io.on('connection', (socket) => {
+  socket.roomId = socket.project._id.toString();
+  socket.join(socket.roomId);
+
+  console.log(` User connected to room: ${socket.roomId}, user: ${socket.user?.email}`);
+
+  socket.on('project-message', async (data) => {
+    try {
+      const message = data.message;
+      const aiPresenting = message.includes('@ai');
+
+      if (aiPresenting) {
+        const prompt = message.replace('@ai', '').trim();
+        console.log(" AI Prompt Received:", prompt);
+
+        const result = await generateContent(prompt);
+
+        if (!result || typeof result !== 'string' || result.trim() === '') {
+          console.error(" Invalid AI response:", result);
+          return io.to(socket.roomId).emit('project-message', {
+            message: ' AI returned an invalid or empty response.',
+            sender: {
+              id: 'ai',
+              email: 'AI',
+            },
+          });
+        }
+
+        console.log(" AI Response:", result);
+
+        return io.to(socket.roomId).emit('project-message', {
+          message: result,
+          sender: {
+            id: 'ai',
+            email:'AI',
+          },
+        });
+      }
+
+      // Broadcast normal user message
+      socket.broadcast.to(socket.roomId).emit('project-message', data);
+
+    } catch (error) {
+      console.error("🔥 Error in project-message handler:", error.message || error);
+
+      io.to(socket.roomId).emit('project-message', {
+        message: '❌ Something went wrong while processing your message.',
+        sender: {
+          id: 'system',
+          email: 'Server',
+        },
+      });
+    }
   });
+
   socket.on('disconnect', () => {
+    console.log(`🔌 User disconnected from room: ${socket.roomId}`);
     socket.leave(socket.roomId);
-   });
+  });
 });
 
+// Start the server
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
+
 export default server;

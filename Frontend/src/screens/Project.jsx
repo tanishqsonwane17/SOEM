@@ -45,27 +45,32 @@ const Project = () => {
     setMessage("");
   };
 
-  useEffect(() => {
-    if (!project?._id) return;
+useEffect(() => {
+  if (!project?._id || !user?._id) return;
 
-    initializeSocket(project._id);
+  const newSocket = initializeSocket(project._id);
 
-    receiveMessage("project-message", (data) => {
-      if (data.sender !== user._id) {
-        setChatMessages((prev) => [...prev, data]);
-      }
-    });
+  receiveMessage("project-message", (data) => {
+    console.log("📥 Received message:", data);
+    setChatMessages((prev) => [...prev, data]);
+  });
 
-    axiosInstance
-      .get(`/projects/get-project/${project._id}`)
-      .then((res) => setProject(res.data.project))
-      .catch((err) => console.error("Project fetch error:", err));
+  // Fetch project data
+  axiosInstance
+    .get(`/projects/get-project/${project._id}`)
+    .then((res) => setProject(res.data.project))
+    .catch((err) => console.error("Project fetch error:", err));
 
-    axiosInstance
-      .get("/users/all")
-      .then((res) => setUsers(res.data.users))
-      .catch((err) => console.error("User fetch error:", err));
-  }, [project?._id, user._id]);
+  // Fetch all users
+  axiosInstance
+    .get("/users/all")
+    .then((res) => setUsers(res.data.users))
+    .catch((err) => console.error("User fetch error:", err));
+
+  return () => {
+    newSocket.disconnect();
+  };
+}, [project?._id, user?._id]);
 
   // Auto-scroll to bottom on new message
   useEffect(() => {
@@ -118,10 +123,10 @@ const Project = () => {
                   className={`${
                     isOwn ? "ml-auto bg-blue-200" : "bg-white"
                   } p-2 rounded-md w-fit max-w-[70%] shadow`}
-                >
-                  <small className="text-xs text-gray-500">
-                    {isOwn ? "You" : msg.sender}
-                  </small>
+                  >
+                 <small className="text-xs text-gray-500">
+                   {isOwn ? "You" : msg.sender?.email || "Unknown"}
+                 </small>
                   <p className="text-sm">{msg.message}</p>
                 </div>
               );
