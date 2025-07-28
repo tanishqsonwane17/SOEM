@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
 import dbConnection from './db/db.js';
 import projectRoutes from './routes/project.routes.js';
+import airRoutes from './routes/ai.routes.js';
 const app = express();
 
 app.use(cookieParser());
@@ -23,5 +24,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 app.use('/projects', projectRoutes);
+app.use('/ai', airRoutes);
 
 export default app;
