@@ -4,6 +4,8 @@ import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSend } from "react-icons/io";
 import axiosInstance from "../config/Axios";
 import { UserContext } from "../context/User.contenxt";
+import Markdown from 'markdown-to-jsx'
+
 import {
   initializeSocket,
   receiveMessage,
@@ -15,7 +17,6 @@ const Project = () => {
   const initialProject = Array.isArray(location.state?.project)
     ? location.state.project[0]
     : location.state?.project;
-
   const [project, setProject] = useState(initialProject);
   const [issidePanelOpen, setissidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -116,31 +117,41 @@ const Project = () => {
         {/* Chat Section */}
         <div className="flex flex-col justify-between flex-grow h-[90%]">
           <div className="message-box flex-grow overflow-y-auto p-4 space-y-3">
-            {chatMessages.map((msg, index) => {
-              const isOwn =
-                msg.sender === user._id ||
-                msg.sender?.id === user._id ||
-                msg.sender?._id === user._id;
-              return (
-                <div
-                  key={index}
-                  className={`${
-                    isOwn
-                      ? "ml-auto bg-slate-500 text-white"
-                      : "bg-gray-100 text-black"
-                  } p-3 rounded-md w-fit max-w-[70%] shadow-md`}
-                >
-                  <small
-                    className={`text-xs font-bold block mt-1 ${
-                      isOwn ? "text-white" : "text-gray-800"
-                    }`}
-                  >
-                    {isOwn ? "You" : msg.sender?.email || msg.sender || "Unknown"}
-                  </small>
-                  <p className="text-sm">{msg.message}</p>
-                </div>
-              );
-            })}
+{chatMessages.map((msg, index) => {
+  const isOwn =
+    msg.sender === user._id ||
+    msg.sender?.id === user._id ||
+    msg.sender?._id === user._id;
+
+  const isAI =
+    msg.sender === "AI" || msg.sender?.id === "ai" || msg.sender?.email === "AI";
+
+  return (
+    <div
+      key={index}
+      className={`${
+        isOwn
+          ? "ml-auto"
+          : "mr-auto"
+      } p-2 rounded-md max-w-[70%]`}
+    >
+      <div
+        className={`p-3 rounded-md shadow-md ${
+          isOwn
+            ? "bg-blue-500 text-white"
+            : isAI
+            ? "bg-gray-100 text-black"
+            : "bg-white text-black"
+        }`}
+      >
+        <Markdown>{msg.message}</Markdown>
+        <small className="text-xs text-gray-500">
+          {isOwn ? "You" : msg.sender?.email || "Unknown"}
+        </small>
+      </div>
+    </div>
+  );
+})}
             <div ref={bottomRef}></div>
           </div>
 
@@ -235,6 +246,7 @@ const Project = () => {
                   </li>
                 ))}
               </ul>
+
               {selectedUserId.length > 0 && (
                 <div className="mt-4 text-sm text-green-600 space-y-1">
                   <h4 className="font-semibold">Selected Users:</h4>
@@ -247,6 +259,7 @@ const Project = () => {
                     ))}
                 </div>
               )}
+
               <button
                 onClick={AddCollaborator}
                 className="mt-4 w-full bg-black text-white py-3 rounded-lg font-semibold"
