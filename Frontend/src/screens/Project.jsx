@@ -36,43 +36,45 @@ const Project = () => {
   };
 
   const send = () => {
+    if (!message.trim()) return;
+
     const msgObj = {
       message,
-      sender: user._id,
+      sender: {
+        id: user._id,
+        email: user.email,
+      },
     };
+
     sendMessage("project-message", msgObj);
     setChatMessages((prev) => [...prev, msgObj]);
     setMessage("");
   };
 
-useEffect(() => {
-  if (!project?._id || !user?._id) return;
+  useEffect(() => {
+    if (!project?._id || !user?._id) return;
 
-  const newSocket = initializeSocket(project._id);
+    const newSocket = initializeSocket(project._id);
 
-  receiveMessage("project-message", (data) => {
-    console.log("📥 Received message:", data);
-    setChatMessages((prev) => [...prev, data]);
-  });
+    receiveMessage("project-message", (data) => {
+      setChatMessages((prev) => [...prev, data]);
+    });
 
-  // Fetch project data
-  axiosInstance
-    .get(`/projects/get-project/${project._id}`)
-    .then((res) => setProject(res.data.project))
-    .catch((err) => console.error("Project fetch error:", err));
+    axiosInstance
+      .get(`/projects/get-project/${project._id}`)
+      .then((res) => setProject(res.data.project))
+      .catch((err) => console.error("Project fetch error:", err));
 
-  // Fetch all users
-  axiosInstance
-    .get("/users/all")
-    .then((res) => setUsers(res.data.users))
-    .catch((err) => console.error("User fetch error:", err));
+    axiosInstance
+      .get("/users/all")
+      .then((res) => setUsers(res.data.users))
+      .catch((err) => console.error("User fetch error:", err));
 
-  return () => {
-    newSocket.disconnect();
-  };
-}, [project?._id, user?._id]);
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [project?._id, user?._id]);
 
-  // Auto-scroll to bottom on new message
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -86,9 +88,8 @@ useEffect(() => {
         projectId: project._id,
         users: selectedUserId,
       })
-      .then((res) => {
+      .then(() => {
         setIsModalOpen(false);
-        console.log("Collaborators added:", res.data);
       })
       .catch((err) => console.error("Error adding collaborators:", err));
   };
@@ -116,17 +117,26 @@ useEffect(() => {
         <div className="flex flex-col justify-between flex-grow h-[90%]">
           <div className="message-box flex-grow overflow-y-auto p-4 space-y-3">
             {chatMessages.map((msg, index) => {
-              const isOwn = msg.sender === user._id;
+              const isOwn =
+                msg.sender === user._id ||
+                msg.sender?.id === user._id ||
+                msg.sender?._id === user._id;
               return (
                 <div
                   key={index}
                   className={`${
-                    isOwn ? "ml-auto bg-blue-200" : "bg-white"
-                  } p-2 rounded-md w-fit max-w-[70%] shadow`}
+                    isOwn
+                      ? "ml-auto bg-slate-500 text-white"
+                      : "bg-gray-100 text-black"
+                  } p-3 rounded-md w-fit max-w-[70%] shadow-md`}
+                >
+                  <small
+                    className={`text-xs font-bold block mt-1 ${
+                      isOwn ? "text-white" : "text-gray-800"
+                    }`}
                   >
-                 <small className="text-xs text-gray-500">
-                   {isOwn ? "You" : msg.sender?.email || "Unknown"}
-                 </small>
+                    {isOwn ? "You" : msg.sender?.email || msg.sender || "Unknown"}
+                  </small>
                   <p className="text-sm">{msg.message}</p>
                 </div>
               );
@@ -134,12 +144,13 @@ useEffect(() => {
             <div ref={bottomRef}></div>
           </div>
 
-          <div className="w-full p-2 bg-white flex gap-2  bottom-0">
+          {/* Message Input */}
+          <div className="w-full p-2 bg-white flex gap-2 bottom-0">
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               type="text"
-              placeholder="Enter message"
+              placeholder="Type your message... or use @ai"
               className="bg-gray-100 p-2 px-4 w-full border-gray-300 rounded-md outline-none"
             />
             <button
@@ -159,7 +170,7 @@ useEffect(() => {
         >
           <header className="flex justify-between p-2 bg-slate-100 items-center">
             <h1 className="text-sm font-bold text-gray-800 uppercase">
-              Collaborator
+              Collaborators
             </h1>
             <button
               className="cursor-pointer"
@@ -194,7 +205,7 @@ useEffect(() => {
           >
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative flex flex-col">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Select User</h2>
+                <h2 className="text-xl font-semibold">Select Users</h2>
                 <button
                   className="text-gray-500 hover:text-gray-700"
                   onClick={() => setIsModalOpen(false)}
@@ -224,7 +235,6 @@ useEffect(() => {
                   </li>
                 ))}
               </ul>
-
               {selectedUserId.length > 0 && (
                 <div className="mt-4 text-sm text-green-600 space-y-1">
                   <h4 className="font-semibold">Selected Users:</h4>
@@ -232,12 +242,11 @@ useEffect(() => {
                     .filter((user) => selectedUserId.includes(user._id))
                     .map((user) => (
                       <div key={user._id} className="text-gray-700">
-                        ✅ {user.email}
+                        {user.email}
                       </div>
                     ))}
                 </div>
               )}
-
               <button
                 onClick={AddCollaborator}
                 className="mt-4 w-full bg-black text-white py-3 rounded-lg font-semibold"

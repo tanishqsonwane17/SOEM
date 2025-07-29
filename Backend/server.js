@@ -20,7 +20,6 @@ const io = new Server(server, {
     origin: '*',
   },
 });
-
 // Middleware for authentication and project validation
 io.use(async (socket, next) => {
   try {
