@@ -5,7 +5,8 @@ import { IoMdSend } from "react-icons/io";
 import axiosInstance from "../config/Axios";
 import { UserContext } from "../context/User.contenxt";
 import Markdown from 'markdown-to-jsx'
-
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
   initializeSocket,
   receiveMessage,
@@ -159,7 +160,35 @@ const Project = () => {
                  : "bg-gray-100 text-black"
              }`}
            >
-             <Markdown>{msg.message}</Markdown>
+             <Markdown
+  options={{
+    overrides: {
+      code: {
+        component: ({ className, children }) => {
+          const language = className?.replace("lang-", "") || "javascript";
+          return (
+            <SyntaxHighlighter
+              language={language}
+              style={oneDark}
+              customStyle={{
+                padding: "1rem",
+                borderRadius: "0.5rem",
+                background: "#1e1e1e",
+                fontSize: "0.9rem",
+                fontFamily: "monospace",
+              }}
+            >
+              {children}
+            </SyntaxHighlighter>
+          );
+        },
+      },
+    },
+  }}
+>
+  {msg.message}
+</Markdown>
+
            </div>
                </div>
              </div>
