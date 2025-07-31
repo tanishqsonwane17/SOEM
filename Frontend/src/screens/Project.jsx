@@ -117,41 +117,54 @@ const Project = () => {
         {/* Chat Section */}
         <div className="flex flex-col justify-between flex-grow h-[90%]">
           <div className="message-box flex-grow overflow-y-auto p-4 space-y-3">
-{chatMessages.map((msg, index) => {
-  const isOwn =
-    msg.sender === user._id ||
-    msg.sender?.id === user._id ||
-    msg.sender?._id === user._id;
+         {chatMessages.map((msg, index) => {
+           const isOwn =
+             msg.sender === user._id ||
+             msg.sender?.id === user._id ||
+             msg.sender?._id === user._id;
+         
+           const isAI =
+             msg.sender === "AI" || msg.sender?.id === "ai" || msg.sender?.email === "AI";
 
-  const isAI =
-    msg.sender === "AI" || msg.sender?.id === "ai" || msg.sender?.email === "AI";
+             return (
+               <div
+                 key={index}
+                 className={`${
+                   isOwn
+                     ? "ml-auto max-w-[80%]"
+                     : isAI
+                     ? "mr-auto max-w-96"
+                     : "mr-auto max-w-[70%]"
+                 } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
+               >
+               ...
+               <div
+                 className={`p-1  rounded-md shadow-md ${
+                   isOwn
+                     ? "bg-slate-100 text-white"
+                     : isAI
+                     ? "bg-gray-100 text-black"
+                     : "bg-white text-black"
+                 }`} >
+                <small className="text-xs text-gray-500">
+                {isOwn ? "You" : msg.sender?.email || "Unknown"}
+                </small>
 
-  return (
-    <div
-      key={index}
-      className={`${
-        isOwn
-          ? "ml-auto"
-          : "mr-auto"
-      } p-2 rounded-md max-w-[70%]`}
-    >
-      <div
-        className={`p-3 rounded-md shadow-md ${
-          isOwn
-            ? "bg-blue-500 text-white"
-            : isAI
-            ? "bg-gray-100 text-black"
-            : "bg-white text-black"
-        }`}
-      >
-        <Markdown>{msg.message}</Markdown>
-        <small className="text-xs text-gray-500">
-          {isOwn ? "You" : msg.sender?.email || "Unknown"}
-        </small>
-      </div>
-    </div>
-  );
-})}
+           <div
+             className={`overflow-auto p-2 rounded-md ${
+               isOwn
+                 ? "bg--400 text-black"
+                 : isAI
+                 ? "bg-slate-900 text-white"
+                 : "bg-gray-100 text-black"
+             }`}
+           >
+             <Markdown>{msg.message}</Markdown>
+           </div>
+               </div>
+             </div>
+           );
+         })}
             <div ref={bottomRef}></div>
           </div>
 
