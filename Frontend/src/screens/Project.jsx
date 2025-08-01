@@ -25,7 +25,17 @@ const Project = () => {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const { user } = useContext(UserContext);
-
+ const [fileTree, setFileTree] = useState({
+      "app.js":{
+        content:"const epxress  =  require('express')",
+      },
+      "package.json":{
+        content:`{
+        "name" : "temp-server",
+        }`
+      }
+ })
+const [currentFile, setCurrentFile] = useState(null)
   const bottomRef = useRef(null);
 
   const handleUserSelect = (id) => {
@@ -97,6 +107,7 @@ const Project = () => {
 
 
 function getTextFromMessage(message) {
+  
   // Step 1: Check if message is valid JSON
   try {
     const parsed = JSON.parse(message);
@@ -153,7 +164,6 @@ function WriteAiMessage(message, isOwn, isAI) {
             <FaUserGroup className="text-xl" />
           </button>
         </header>
-
         {/* Chat Section */}
         <div className="flex flex-col justify-between flex-grow h-[90%]">
           <div className="message-box flex-grow overflow-y-auto p-4 space-y-3">
@@ -220,9 +230,8 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
         </div>
 
-        {/* Side Panel */}
-        <div
-          className={`absolute top-0 left-0 h-full w-full bg-slate-300 z-50 transition-transform duration-300 ease-in-out ${
+        <div>   
+       <div className={`absolute top-0 left-0 h-full w-full bg-slate-300 z-50 transition-transform duration-300 ease-in-out ${
             issidePanelOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -255,6 +264,7 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
         </div>
 
+        </div>
         {/* Modal */}
         {isModalOpen && (
           <div
@@ -317,6 +327,32 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
         )}
       </section>
+     <section className="right h-full w-full flex-grow flex  bg-gray-200">
+      <div className="explorer h-full min-w-52 max-w-64 bg-[#dee4ec]">
+        <div className="fileTree">
+          {Object.keys(fileTree).map((file,index) => (
+             <button
+             onClick={() => setCurrentFile(file)}
+             key={index} className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-slate-300 w-full">
+            <p className=" font-semibold">{file}</p>
+          </button>
+
+          ))}
+        </div>
+      </div>
+      <div className="codeEditor">
+        {currentFile && (
+          <div className="flex flex-col h-full w-full ">
+            <h1>{currentFile}</h1>
+            <button className="p-2 ">
+              <i className="ri-download-2-fill"></i>
+            </button>
+
+          </div>
+        )}
+      </div>
+       </section>
+
     </main>
   );
 };
