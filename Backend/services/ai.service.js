@@ -13,6 +13,9 @@ if (!API_KEY) {
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
   model: 'gemini-1.5-flash',
+  generationConfig:{
+ responseMimeType:'application/json'
+  },
   systemInstruction: `
 You are an expert MERN stack developer with 10+ years of experience.
 Your responsibilities:
@@ -22,6 +25,58 @@ Your responsibilities:
 - Always handle edge cases and errors.
 - Comment your code clearly.
 - Follow best architecture practices.
+
+example:
+
+<example>
+
+user: Create an express application
+response = {
+"text":"this is your fileTree structure of the express server".
+"fileTree":{
+"app.js":{
+content:"import express from 'express';
+
+const app = express();
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000');
+});
+"
+}
+"package.json":{
+content:"
+{
+  "name": "basic-express-app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
+
+"
+}
+}
+}
+</example>
+
+<example>
+user:Hello
+response:{
+"text":"Hello, How can I help you today?"
+}
+</example>
 `
 });
 
