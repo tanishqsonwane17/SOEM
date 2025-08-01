@@ -6,7 +6,6 @@ import axiosInstance from "../config/Axios";
 import { UserContext } from "../context/User.contenxt";
 import Markdown from 'markdown-to-jsx'
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
   initializeSocket,
   receiveMessage,
@@ -96,6 +95,46 @@ const Project = () => {
       .catch((err) => console.error("Error adding collaborators:", err));
   };
 
+
+function getTextFromMessage(message) {
+  // Step 1: Check if message is valid JSON
+  try {
+    const parsed = JSON.parse(message);
+    return parsed?.text || message; // If JSON has text, return it. Else fallback
+  } catch {
+    // Step 2: Try to handle poor format like 'text: hello'
+    if (message.startsWith("text:")) {
+      return message.slice(5).trim();
+    }
+    return message;
+  }
+}
+
+function WriteAiMessage(message, isOwn, isAI) {
+  const safeText = getTextFromMessage(message);
+
+  return (
+    <div
+      className={`overflow-auto p-2 rounded-md ${
+        isOwn
+          ? "bg-gray-200 text-black"
+          : isAI
+          ? "bg-slate-900 text-white"
+          : "bg-gray-100 text-black"
+      }`}
+    >
+      <Markdown
+        children={safeText}
+        options={{
+          overrides: {
+            code: SyntaxHighlighter,
+          },
+        }}
+      />
+    </div>
+  );
+}
+
   return (
     <main className="h-screen w-screen flex">
       <section className="left relative flex flex-col h-full w-full md:w-[20rem] bg-slate-300">
@@ -128,7 +167,7 @@ const Project = () => {
              msg.sender === "AI" || msg.sender?.id === "ai" || msg.sender?.email === "AI";
 
              return (
-               <div
+                <div
                  key={index}
                  className={`${
                    isOwn
@@ -139,58 +178,24 @@ const Project = () => {
                  } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
                >
                ...
-               <div
-                 className={`p-1  rounded-md shadow-md ${
-                   isOwn
-                     ? "bg-slate-100 text-white"
-                     : isAI
-                     ? "bg-gray-100 text-black"
-                     : "bg-white text-black"
-                 }`} >
-                <small className="text-xs text-gray-500">
-                {isOwn ? "You" : msg.sender?.email || "Unknown"}
-                </small>
-
-           <div
-             className={`overflow-auto p-2 rounded-md ${
-               isOwn
-                 ? "bg--400 text-black"
-                 : isAI
-                 ? "bg-slate-900 text-white"
-                 : "bg-gray-100 text-black"
-             }`}
-           >
-             <Markdown
-  options={{
-    overrides: {
-      code: {
-        component: ({ className, children }) => {
-          const language = className?.replace("lang-", "") || "javascript";
-          return (
-            <SyntaxHighlighter
-              language={language}
-              style={oneDark}
-              customStyle={{
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                background: "#1e1e1e",
-                fontSize: "0.9rem",
-                fontFamily: "monospace",
-              }}
-            >
-              {children}
-            </SyntaxHighlighter>
-          );
-        },
-      },
-    },
-  }}
->
-  {msg.message}
-</Markdown>
-
-           </div>
-               </div>
+             <div
+               className={`p-1  rounded-md shadow-md ${
+                 isOwn
+                   ? "bg-slate-100 text-white"
+                   : isAI
+                   ? "bg-gray-100 text-black"
+                   : "bg-white text-black"
+               }`}
+             >
+               <small className="text-xs text-gray-500">
+                 {isOwn ? "You" : msg.sender?.email || "Unknown"}
+               </small>
+             
+               {WriteAiMessage(msg.message, isOwn, isAI)}
+             
+               {/* Remove this line ⛔ */}
+               {/* {msg.message} */}
+             </div>
              </div>
            );
          })}

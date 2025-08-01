@@ -63,9 +63,16 @@ content:"
   "dependencies": {
     "express": "^4.19.2"
   }
+},
+",
+"buildCommand":{
+mainItem:"npm",
+commands:["install", "start"]
+},
+"startCommand":{
+mainItem:"node",
+commands:['app.js']
 }
-
-"
 }
 }
 }
