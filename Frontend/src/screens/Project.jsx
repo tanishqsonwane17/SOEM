@@ -340,17 +340,29 @@ function WriteAiMessage(message, isOwn, isAI) {
           ))}
         </div>
       </div>
+      {currentFile && (
       <div className="codeEditor">
-        {currentFile && (
-          <div className="flex flex-col h-full w-full ">
-            <h1>{currentFile}</h1>
-            <button className="p-2 ">
-              <i className="ri-download-2-fill"></i>
-            </button>
-
-          </div>
+       <div className="top">
+        <h1 className="text-lg font-semibold">{currentFile}</h1>
+       </div>
+       <div className="bottom">
+        {fileTree[currentFile] && (
+         <textarea
+           value={fileTree[currentFile]?.content || ""}
+           onChange={(e) => {
+             setFileTree({
+               ...fileTree,
+               [currentFile]: {
+                 content: e.target.value
+               }
+             })
+           }}
+           className="w-full h-full p-4 bg-slate-500 text-white"
+         />
         )}
+       </div>
       </div>
+        )}
        </section>
 
     </main>
