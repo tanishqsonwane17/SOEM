@@ -25,16 +25,7 @@ const Project = () => {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const { user } = useContext(UserContext);
- const [fileTree, setFileTree] = useState({
-      "app.js":{
-        content:"const epxress  =  require('express')",
-      },
-      "package.json":{
-        content:`{
-        "name" : "temp-server",
-        }`
-      }
- })
+ const [fileTree, setFileTree] = useState({ })
 const [currentFile, setCurrentFile] = useState(null)
 const [openFiles, setopenFiles] = useState([])
   const bottomRef = useRef(null);
@@ -59,6 +50,7 @@ const [openFiles, setopenFiles] = useState([])
     };
 
     sendMessage("project-message", msgObj);
+
     setChatMessages((prev) => [...prev, msgObj]);
     setMessage("");
   };
@@ -69,6 +61,16 @@ const [openFiles, setopenFiles] = useState([])
     const newSocket = initializeSocket(project._id);
 
     receiveMessage("project-message", (data) => {
+      const message = JSON.parse(data.message)
+      if(message.fileTree){
+        setFileTree(message.fileTree)
+      }
+      if(message.currentFile){
+        setCurrentFile(message.currentFile)
+      }
+      if(message.openFiles){
+        setopenFiles(message.openFiles)
+      }
       setChatMessages((prev) => [...prev, data]);
     });
 
@@ -347,11 +349,11 @@ function WriteAiMessage(message, isOwn, isAI) {
       </div>
       {currentFile && (
       <div className="codeEditor flex flex-col flex-grow h-full">
-          <div className="top">
+          <div className="top flex">
             {openFiles.map((file, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentFile(file)} // Only set current tab here
+                onClick={() => setCurrentFile(file)} 
                 className={`open-file cursor-pointer p-2 flex items-center px-4 gap-2 w-full ${
                   currentFile === file ? "bg-slate-400" : "bg-slate-300"
                 }`}

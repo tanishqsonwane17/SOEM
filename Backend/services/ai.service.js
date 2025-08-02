@@ -65,6 +65,9 @@ content:"
   }
 },
 ",
+}
+}
+}
 "buildCommand":{
 mainItem:"npm",
 commands:["install", "start"]
@@ -73,9 +76,7 @@ commands:["install", "start"]
 mainItem:"node",
 commands:['app.js']
 }
-}
-}
-}
+
 </example>
 
 <example>
