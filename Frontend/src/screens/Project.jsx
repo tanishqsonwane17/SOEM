@@ -6,6 +6,7 @@ import axiosInstance from "../config/Axios";
 import { UserContext } from "../context/User.contenxt";
 import Markdown from 'markdown-to-jsx'
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import Editor from "@monaco-editor/react";
 import {
   initializeSocket,
   receiveMessage,
@@ -331,7 +332,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         )}
       </section>
      <section className="right h-full w-full flex-grow flex  bg-gray-200">
-      <div className="explorer h-full min-w-52 max-w-64 bg-[#dee4ec]">
+      <div className="explorer h-full min-w-52 max-w-64 bg-[#262626]">
             {Object.keys(fileTree).map((file, index) => (
               <button
                 key={index}
@@ -341,7 +342,7 @@ function WriteAiMessage(message, isOwn, isAI) {
                     setopenFiles(prev => [...prev, file]);
                   }
                 }}
-                className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-slate-300 w-full"
+                className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-[#282828] text-white w-full"
               >
                 <p className="font-semibold">{file}</p>
               </button>
@@ -349,13 +350,13 @@ function WriteAiMessage(message, isOwn, isAI) {
       </div>
       {currentFile && (
       <div className="codeEditor flex flex-col flex-grow h-full">
-          <div className="top flex">
+          <div className="top flex gap-[1px]">
             {openFiles.map((file, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentFile(file)} 
                 className={`open-file cursor-pointer p-2 flex items-center px-4 gap-2 w-full ${
-                  currentFile === file ? "bg-slate-400" : "bg-slate-300"
+                  currentFile === file ? "bg-[#262626] text-white"  : "bg-[#262626] text-white"
                 }`}
               >
                 <p className="font-semibold">{file}</p>
@@ -364,18 +365,20 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
        <div className="bottom flex flex-grow"> 
         {fileTree[currentFile] && (
-         <textarea
-           value={fileTree[currentFile]?.content || ""}
-           onChange={(e) => {
-             setFileTree({
-               ...fileTree,
-               [currentFile]: {
-                 content: e.target.value
-               }
-             })
-           }}
-           className="w-full h-full p-4 bg-slate-50 text-black "
-         />
+<Editor
+  height="100%"
+  defaultLanguage="javascript"
+  value={fileTree[currentFile]?.content || ""}
+  onChange={(value) => {
+    setFileTree({
+      ...fileTree,
+      [currentFile]: {
+        content: value || "",
+      },
+    });
+  }}
+  theme="vs-dark"
+/>
         )}
        </div>
       </div>
