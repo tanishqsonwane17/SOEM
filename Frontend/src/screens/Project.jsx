@@ -36,6 +36,7 @@ const Project = () => {
       }
  })
 const [currentFile, setCurrentFile] = useState(null)
+const [openFiles, setopenFiles] = useState([])
   const bottomRef = useRef(null);
 
   const handleUserSelect = (id) => {
@@ -329,23 +330,37 @@ function WriteAiMessage(message, isOwn, isAI) {
       </section>
      <section className="right h-full w-full flex-grow flex  bg-gray-200">
       <div className="explorer h-full min-w-52 max-w-64 bg-[#dee4ec]">
-        <div className="fileTree">
-          {Object.keys(fileTree).map((file,index) => (
-             <button
-             onClick={() => setCurrentFile(file)}
-             key={index} className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-slate-300 w-full">
-            <p className=" font-semibold">{file}</p>
-          </button>
-
-          ))}
-        </div>
+            {Object.keys(fileTree).map((file, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setCurrentFile(file);
+                  if (!openFiles.includes(file)) {
+                    setopenFiles(prev => [...prev, file]);
+                  }
+                }}
+                className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-slate-300 w-full"
+              >
+                <p className="font-semibold">{file}</p>
+              </button>
+            ))}
       </div>
       {currentFile && (
-      <div className="codeEditor">
-       <div className="top">
-        <h1 className="text-lg font-semibold">{currentFile}</h1>
-       </div>
-       <div className="bottom">
+      <div className="codeEditor flex flex-col flex-grow h-full">
+          <div className="top">
+            {openFiles.map((file, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentFile(file)} // Only set current tab here
+                className={`open-file cursor-pointer p-2 flex items-center px-4 gap-2 w-full ${
+                  currentFile === file ? "bg-slate-400" : "bg-slate-300"
+                }`}
+              >
+                <p className="font-semibold">{file}</p>
+              </button>
+            ))}
+          </div>
+       <div className="bottom flex flex-grow"> 
         {fileTree[currentFile] && (
          <textarea
            value={fileTree[currentFile]?.content || ""}
@@ -357,7 +372,7 @@ function WriteAiMessage(message, isOwn, isAI) {
                }
              })
            }}
-           className="w-full h-full p-4 bg-slate-500 text-white"
+           className="w-full h-full p-4 bg-slate-50 text-black "
          />
         )}
        </div>
