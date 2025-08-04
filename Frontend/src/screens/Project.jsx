@@ -143,7 +143,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         isOwn
           ? "bg-gray-200 text-black"
           : isAI
-          ? "bg-slate-900 text-white"
+          ? "bg-[#38383897] text-white"
           : "bg-gray-100 text-black"
       }`}
     >
@@ -198,16 +198,15 @@ function WriteAiMessage(message, isOwn, isAI) {
                      : isAI
                      ? "mr-auto max-w-96"
                      : "mr-auto  max-w-[70%]"
-                 } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
+                 } break-words  whitespace-pre-wrap overflow-hidden rounded-md`}
                >
-               ...
              <div
                className={`p-1  rounded-md shadow-md ${
                  isOwn
-                   ? "bg-[#626262] text-white"
+                   ? "bg-[#515151] text-white"
                    : isAI
                    ? "bg-[#595959] text-black"
-                   : "bg-white text-black"
+                   : "bg-[#a3a3a367] text-black"
                }`}
              >
                <small className="text-xs text-gray-200 font-bold">
@@ -223,7 +222,6 @@ function WriteAiMessage(message, isOwn, isAI) {
             <div ref={bottomRef}></div>
           </div>
 
-          {/* Message Input */}
           <div className="w-full p-2 bg-[#a3a3a367] flex gap-2 bottom-0">
             <input
               value={message}
