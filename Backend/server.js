@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
     try {
       const message = data.message;
       const aiPresenting = message.includes('@ai');
+      socket.broadcast.to(socket.roomId).emit('project-message', data);
 
       if (aiPresenting) {
         const prompt = message.replace('@ai', '').trim();
@@ -97,7 +98,7 @@ io.on('connection', (socket) => {
       }
 
       // Broadcast normal user message
-      socket.broadcast.to(socket.roomId).emit('project-message', data);
+      
 
     } catch (error) {
       console.error("🔥 Error in project-message handler:", error.message || error);

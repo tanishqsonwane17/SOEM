@@ -62,7 +62,16 @@ const [openFiles, setopenFiles] = useState([])
     const newSocket = initializeSocket(project._id);
 
     receiveMessage("project-message", (data) => {
-      const message = JSON.parse(data.message)
+     let message = data.message;
+try {
+  // If it's a string and is JSON, parse it
+  if (typeof message === "string" && message.trim().startsWith("{")) {
+    message = JSON.parse(message);
+  }
+} catch (e) {
+  console.log("Error parsing message:", e);
+}
+
       if(message.fileTree){
         setFileTree(message.fileTree)
       }
