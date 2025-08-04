@@ -152,8 +152,8 @@ function WriteAiMessage(message, isOwn, isAI) {
 
   return (
     <main className="h-screen w-screen flex">
-      <section className="left relative flex flex-col h-full w-full md:w-[20rem] bg-slate-300">
-        <header className="flex justify-between items-center p-4 bg-slate-100">
+      <section className="left relative flex flex-col h-full w-full md:w-[20rem] bg-[#2f2f2f]">
+        <header className="flex justify-between items-center p-4 bg-[#1f1f1f] text-white">
           <button
             className="flex gap-1 cursor-pointer"
             onClick={() => setIsModalOpen(true)}
@@ -188,27 +188,25 @@ function WriteAiMessage(message, isOwn, isAI) {
                      ? "ml-auto max-w-[80%]"
                      : isAI
                      ? "mr-auto max-w-96"
-                     : "mr-auto max-w-[70%]"
+                     : "mr-auto  max-w-[70%]"
                  } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
                >
                ...
              <div
                className={`p-1  rounded-md shadow-md ${
                  isOwn
-                   ? "bg-slate-100 text-white"
+                   ? "bg-[#626262] text-white"
                    : isAI
-                   ? "bg-gray-100 text-black"
+                   ? "bg-[#595959] text-black"
                    : "bg-white text-black"
                }`}
              >
-               <small className="text-xs text-gray-500">
+               <small className="text-xs text-gray-200 font-bold">
                  {isOwn ? "You" : msg.sender?.email || "Unknown"}
                </small>
              
                {WriteAiMessage(msg.message, isOwn, isAI)}
              
-               {/* Remove this line ⛔ */}
-               {/* {msg.message} */}
              </div>
              </div>
            );
@@ -217,17 +215,17 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
 
           {/* Message Input */}
-          <div className="w-full p-2 bg-white flex gap-2 bottom-0">
+          <div className="w-full p-2 bg-[#a3a3a367] flex gap-2 bottom-0">
             <input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               type="text"
-              placeholder="Type your message... or use @ai"
-              className="bg-gray-100 p-2 px-4 w-full border-gray-300 rounded-md outline-none"
+              placeholder="Type your message.. or @ai"
+              className="bg-[#20202090] p-2 px-4 w-full text-white text-sm border-gray-300 rounded-md outline-none"
             />
             <button
               onClick={send}
-              className="p-2 bg-black hover:bg-slate-800 rounded-md text-white cursor-pointer"
+              className="p-2 bg-[#1e1e1eab] hover:bg-[#202020] rounded-md text-white cursor-pointer"
             >
               <IoMdSend className="text-2xl" />
             </button>
@@ -331,7 +329,7 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
         )}
       </section>
-     <section className="right h-full w-full flex-grow flex  bg-gray-200">
+     <section className="right h-full w-full flex-grow flex  bg-[#282828]">
       <div className="explorer h-full min-w-52 max-w-64 bg-[#262626]">
             {Object.keys(fileTree).map((file, index) => (
               <button
@@ -342,21 +340,22 @@ function WriteAiMessage(message, isOwn, isAI) {
                     setopenFiles(prev => [...prev, file]);
                   }
                 }}
-                className="treeElem cursor-pointer p-2 flex items-center px-4 gap-2 bg-[#282828] text-white w-full"
+                className="treeElem cursor-pointer flex items-center bg-[#282828] text-white w-full"
               >
-                <p className="font-semibold">{file}</p>
+                <p 
+                className="font-semibold active:bg-[#272727] bg-[#1d1d1d7e] flex items-center justify-center h-10  w-full ">{file}</p>
               </button>
             ))}
       </div>
       {currentFile && (
       <div className="codeEditor flex flex-col flex-grow h-full">
-          <div className="top flex gap-[1px]">
+          <div className="top flex bg-gray-400 w-full gap-[1px]">
             {openFiles.map((file, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentFile(file)} 
                 className={`open-file cursor-pointer p-2 flex items-center px-4 gap-2 w-full ${
-                  currentFile === file ? "bg-[#262626] text-white"  : "bg-[#262626] text-white"
+                  currentFile === file ? "bg-[#262626] flex justify-center text-white"  : "bg-[#262626] flex justify-center text-white"
                 }`}
               >
                 <p className="font-semibold">{file}</p>
