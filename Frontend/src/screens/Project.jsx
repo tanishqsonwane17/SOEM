@@ -7,6 +7,7 @@ import { UserContext } from "../context/User.contenxt";
 import Markdown from 'markdown-to-jsx'
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import Editor from "@monaco-editor/react";
+import '../app.css'
 import {
   initializeSocket,
   receiveMessage,
@@ -179,7 +180,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         </header>
         {/* Chat Section */}
         <div className="flex flex-col justify-between flex-grow h-[90%]">
-          <div className="message-box flex-grow overflow-y-auto p-4 space-y-3">
+<div className="message-box flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
          {chatMessages.map((msg, index) => {
            const isOwn =
              msg.sender === user._id ||
