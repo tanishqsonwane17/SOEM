@@ -12,7 +12,7 @@ if (!API_KEY) {
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+   model: 'gemini-1.5-flash',
   generationConfig:{
  responseMimeType:'application/json'
   },
@@ -35,7 +35,8 @@ response = {
 "text":"this is your fileTree structure of the express server".
 "fileTree":{
 "app.js":{
-content:"import express from 'express';
+file:{
+contents:"import express from 'express';
 
 const app = express();
 
@@ -50,8 +51,10 @@ app.listen(3000, () => {
 });
 "
 }
+}
 "package.json":{
-content:"
+file:{
+contents:"
 {
   "name": "basic-express-app",
   "version": "1.0.0",
@@ -64,6 +67,7 @@ content:"
     "express": "^4.19.2"
   }
 },
+}
 ",
 }
 }

@@ -105,6 +105,9 @@ try {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatMessages]);
+useEffect(() => {
+  console.log("Updated fileTree:", fileTree);
+}, [fileTree]);
 
   const AddCollaborator = () => {
     if (!project?._id) return;
@@ -261,8 +264,7 @@ function WriteAiMessage(message, isOwn, isAI) {
               project.users.map((users) => (
                 <div
                   key={users._id}
-                  className="user hover:text-white flex gap-2 items-center cursor-pointer hover:bg-slate-400 p-4"
-                >
+                  className="user hover:text-white flex gap-2 items-center cursor-pointer hover:bg-slate-400 p-4">
                   <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                     <i className="ri-user-3-fill text-gray-500"></i>
                   </div>
@@ -375,7 +377,7 @@ function WriteAiMessage(message, isOwn, isAI) {
 <Editor
   height="100%"
   defaultLanguage="javascript"
-  value={fileTree[currentFile]?.content || ""}
+  value={fileTree[currentFile]?.file.contents || ""}
   onChange={(value) => {
     setFileTree({
       ...fileTree,
