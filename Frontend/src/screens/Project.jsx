@@ -7,6 +7,7 @@ import { UserContext } from "../context/User.contenxt";
 import Markdown from 'markdown-to-jsx'
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import Editor from "@monaco-editor/react";
+import { initializeWebContainer } from "../config/WebContainers";
 import '../app.css'
 import {
   initializeSocket,
