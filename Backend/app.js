@@ -12,8 +12,9 @@ const app = express();
 
 app.use(cookieParser());
 dbConnection();
+
 const allowedOrigins = [
-  'https://soen-one.vercel.app/',
+  'https://soen-one.vercel.app/', 
   'http://localhost:3000'
 ];
 
@@ -26,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/users', userRoutes);
-const cors = require('cors');
+
 
 
 
