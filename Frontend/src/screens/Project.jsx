@@ -66,7 +66,6 @@ const [openFiles, setopenFiles] = useState([])
     receiveMessage("project-message", (data) => {
      let message = data.message;
 try {
-  // If it's a string and is JSON, parse it
   if (typeof message === "string" && message.trim().startsWith("{")) {
     message = JSON.parse(message);
   }
@@ -245,7 +244,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         </div>
 
         <div>   
-       <div className={`absolute top-0 left-0 h-full w-full bg-[#484848c7] z-50 transition-transform duration-300 ease-in-out ${
+       <div className={`absolute top-0 left-0 h-full w-full bg-[#484848f8] z-50 transition-transform duration-300 ease-in-out ${
             issidePanelOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -257,7 +256,7 @@ function WriteAiMessage(message, isOwn, isAI) {
               className="cursor-pointer"
               onClick={() => setissidePanelOpen(false)}
             >
-              <i className="ri-arrow-left-s-line text-3xl text-gray-500"></i>
+              <i className="ri-arrow-left-s-line text-3xl text-white"></i>
             </button>
           </header>
           <div className="users">
