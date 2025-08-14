@@ -14,7 +14,7 @@ app.use(cookieParser());
 dbConnection();
 
 const allowedOrigins = [
-  'https://soen-one.vercel.app/', 
+  'https://soen-one.vercel.app',
   'http://localhost:3000'
 ];
 
