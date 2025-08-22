@@ -26,16 +26,13 @@ export const loginUserController = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    
     try {
         const{email, password} = req.body
         const user = await usermodel.findOne({ email }).select('+password');
         if (!user) {    
             return res.status(404).json({ message: 'User not found' });
         }
-
         const isMatch = await user.isValidPassword(password);
-
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
@@ -43,7 +40,6 @@ export const loginUserController = async (req, res) => {
         delete user._doc.password;
         res.status(200).json({ user, token });
     }
-
     catch (error) {
         res.status(400).json({ message: error.message });
     }

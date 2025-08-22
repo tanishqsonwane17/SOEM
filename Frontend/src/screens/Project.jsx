@@ -377,7 +377,7 @@ function WriteAiMessage(message, isOwn, isAI) {
 <Editor
   height="100%"
   defaultLanguage="javascript"
-  value={fileTree[currentFile]?.file.contents || ""}
+  value={fileTree[currentFile]?.file.content || ""}
   onChange={(value) => {
     setFileTree({
       ...fileTree,
