@@ -8,6 +8,7 @@ import Markdown from 'markdown-to-jsx'
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import Editor from "@monaco-editor/react";
 import { initializeWebContainer } from "../config/WebContainers";
+import { VscRunAll } from "react-icons/vsc";
 import '../App.css'
 import {
   initializeSocket,
@@ -32,7 +33,7 @@ const Project = () => {
 const [currentFile, setCurrentFile] = useState(null)
 const [openFiles, setopenFiles] = useState([])
   const bottomRef = useRef(null);
-
+const [webContainer, setWebContainer] = useState(null)
   const handleUserSelect = (id) => {
     setSelectedUserId((prev) => {
       const updated = new Set(prev);
@@ -57,22 +58,32 @@ const [openFiles, setopenFiles] = useState([])
     setChatMessages((prev) => [...prev, msgObj]);
     setMessage("");
   };
+useEffect(() => {
+  const setup = async () => {
+    if (!webContainer) {
+      const container = await initializeWebContainer();
+      setWebContainer(container);
+      console.log("WebContainer started");
+    }
+  };
+  setup();
+}, [webContainer]);
 
   useEffect(() => {
+
+
     if (!project?._id || !user?._id) return;
-
     const newSocket = initializeSocket(project._id);
-
     receiveMessage("project-message", (data) => {
      let message = data.message;
 try {
   if (typeof message === "string" && message.trim().startsWith("{")) {
     message = JSON.parse(message);
+    webContainer?.mount(message.fileTree)
   }
 } catch (e) {
   console.log("Error parsing message:", e);
 }
-
       if(message.fileTree){
         setFileTree(message.fileTree)
       }
@@ -340,7 +351,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         )}
       </section>
      <section className="right h-full w-full flex-grow flex  bg-[#282828]">
-      <div className="explorer h-full min-w-52 max-w-64 bg-[#262626]">
+      <div className="explorer h-full pt-10 min-w-52 max-w-64 bg-[#262626]">
             {Object.keys(fileTree).map((file, index) => (
               <button
                 key={index}
@@ -359,7 +370,8 @@ function WriteAiMessage(message, isOwn, isAI) {
       </div>
       {currentFile && (
       <div className="codeEditor flex flex-col flex-grow h-full">
-          <div className="top flex bg-gray-400 w-full gap-[1px]">
+          <div className="top justify-between  flex bg-[#1d1d1d7e] w-full gap-[1px]">
+            <div className="files flex">
             {openFiles.map((file, index) => (
               <button
                 key={index}
@@ -371,23 +383,42 @@ function WriteAiMessage(message, isOwn, isAI) {
                 <p className="font-semibold">{file}</p>
               </button>
             ))}
+            </div>
+            <div className="actions flex gap-2">
+              <button
+              onClick={ async ()=>{
+            const LsProcess =  await  webContainer?.spawn('ls')
+           await webContainer.mount(fileTree)
+            LsProcess.output.pipeTo(new WritableStream({
+              write(chunk){
+                console.log(chunk)
+              }}))
+              }}
+              className="p-2 px-4 bg-[#4646467e] text-white "
+              >
+               <VscRunAll/>
+              </button>
+            </div>
           </div>
        <div className="bottom flex flex-grow"> 
         {fileTree[currentFile] && (
-<Editor
-  height="100%"
-  defaultLanguage="javascript"
-  value={fileTree[currentFile]?.file.contents || ""}
-  onChange={(value) => {
-    setFileTree({
-      ...fileTree,
-      [currentFile]: {
-        content: value || "",
-      },
-    });
-  }}
-  theme="vs-dark"
-/>
+        <Editor
+            height="100%"
+            defaultLanguage="javascript"
+            value={fileTree[currentFile]?.file?.contents || ""}
+            onChange={(value) => {
+              setFileTree({
+                ...fileTree,
+                [currentFile]: {
+                  file: {
+                    contents: value || "",
+                  },
+                },
+              });
+            }}
+           theme="vs-dark"
+         />
+
         )}
        </div>
       </div>

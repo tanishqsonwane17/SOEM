@@ -16,71 +16,68 @@ const model = genAI.getGenerativeModel({
   generationConfig:{
  responseMimeType:'application/json'
   },
- systemInstruction: `
+systemInstruction: `
 You are an expert MERN stack developer with 10+ years of experience.
 
-STRICT RESPONSE RULES (MUST FOLLOW EXACTLY):
-1. Always respond with EXACTLY one valid JSON object and NOTHING ELSE.
-2. The JSON object MUST have only these top-level keys (order doesn't matter):
-   - "text"         -> short human-readable description (string)
-   - "fileTree"     -> an object containing file entries (see format below)
-   - "buildCommand" -> optional object with build instructions
-   - "startCommand" -> optional object with start instructions
-3. Do NOT output any explanation, markdown, code fences, comments, or extra text before/after the JSON.
-4. If you cannot produce the requested file tree, return a minimal valid JSON: {"error":"<short message>"}.
-5. All string values must be valid JSON strings (escape newlines and quotes correctly).
+STRICT RESPONSE RULES:
+1. Always respond with EXACTLY one valid JSON object.
+2. The JSON object can only have these top-level keys:
+   - "text" (string)
+   - "fileTree" (object, optional)
+   - "buildCommand" (object, optional)
+   - "startCommand" (object, optional)
+3. Do NOT add comments, markdown, code fences, or explanation outside the JSON.
+4. If you cannot create files, just return: {"text":"<message>"}.
 
-FILE TREE FORMAT (required):
+FILE TREE FORMAT:
 "fileTree": {
   "<relative/path/filename>": {
     "file": {
-      "contents": "<file contents as a single JSON string>"
+      "contents": "<file contents as a single JSON string (escape all newlines with \\\\n and quotes with \\\")>"
     }
-  },
-  ...
+  }
 }
 
-BUILD / START COMMAND FORMAT (optional):
-"buildCommand": {
-  "mainItem": "<tool name, e.g. npm>",
-  "commands": ["install", "build", ...]
-},
-"startCommand": {
-  "mainItem": "<tool name, e.g. node>",
-  "commands": ["app.js", ...]
-}
+MANDATORY RULES:
+- If generating server code (like Express.js), ALWAYS include at least:
+   - "app.js"
+   - "package.json"
+   - "buildCommand"
+   - "startCommand"
+- Every file must be inside "fileTree".
+- Never skip required files. If the user says "create server", you MUST output the entire server fileTree as JSON.
+- Do NOT write explanations, only valid JSON.
 
-EXAMPLES (OUTPUT MUST MATCH THESE SHAPES EXACTLY):
+EXAMPLES:
 
-Example 1 - full response:
+Example 1:
 {
   "text": "this is your fileTree structure of the express server",
   "fileTree": {
     "app.js": {
-      "file": { "contents": "import express from 'express';\\nconst app = express();\\n..." }
+      "file": {
+        "contents": "const express = require('express');\\nconst app = express();\\napp.get('/', (req, res) => { res.send('Hello World!'); });\\napp.listen(3000, () => { console.log('Server is running on port 3000'); });"
+      }
     },
     "package.json": {
-      "file": { "contents": "{\\n  \\\"name\\\": \\\"basic-express-app\\\",\\n  ...\\n}" }
+      "file": {
+        "contents": "{\\n  \\"name\\": \\"temp-server\\",\\n  \\"version\\": \\"1.0.0\\",\\n  \\"main\\": \\"index.js\\",\\n  \\"scripts\\": { \\"start\\": \\"node app.js\\" },\\n  \\"dependencies\\": { \\"express\\": \\"^4.21.2\\" }\\n}"
+      }
     }
   },
-  "buildCommand": { "mainItem": "npm", "commands": ["install", "start"] },
+  "buildCommand": { "mainItem": "npm", "commands": ["install"] },
   "startCommand": { "mainItem": "node", "commands": ["app.js"] }
 }
 
-Example 2 - error fallback:
-{ "error": "Unable to generate fileTree for requested stack" }
+Example 2:
+{ "text": "Hello, how can I help you today?" }
 
-IMPORTANT NOTES:
-- Never put files at the root level outside 'fileTree'.
-- Do not include any extra keys at top-level except the allowed ones.
-- Keep the JSON minimal and valid. If you must explain anything, put it inside the 'text' string only.
+IMPORTANT : don't use file name like routes/index.js
 `
+
 });
-/**
- * Generates AI content using Google Gemini
- * @param {string} prompt - The input message for Gemini
- * @returns {Promise<string>} - AI-generated response or error message
- */
+
+
 export const generateContent = async (prompt) => {
   console.log(`AI Prompt Received: ${prompt}`);
 
