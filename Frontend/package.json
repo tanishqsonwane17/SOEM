@@ -23,6 +23,7 @@
     "react-syntax-highlighter": "^15.6.1",
     "remixicon": "^4.6.0",
     "socket.io-client": "^4.8.1",
+    "strip-ansi": "^7.1.0",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

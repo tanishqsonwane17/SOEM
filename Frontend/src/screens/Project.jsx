@@ -9,6 +9,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import Editor from "@monaco-editor/react";
 import { initializeWebContainer } from "../config/WebContainers";
 import { VscRunAll } from "react-icons/vsc";
+import stripAnsi from "strip-ansi";
 import '../App.css'
 import {
   initializeSocket,
@@ -64,10 +65,54 @@ useEffect(() => {
       const container = await initializeWebContainer();
       setWebContainer(container);
       console.log("WebContainer started");
+
+      // 🔥 Yaha mount karo default project structure
+      await container.mount({
+        'package.json': {
+          file: {
+            contents: JSON.stringify({
+              name: "my-app",
+              version: "1.0.0",
+              scripts: {
+                start: "node index.js"
+              },
+              dependencies: {
+                express: "^4.18.2"
+              }
+            }, null, 2) // null,2 se JSON pretty format ho jaega
+          }
+        },
+        'index.js': {
+          file: {
+            contents: `console.log("Server running...")`
+          }
+        }
+      });
+      await webContainer.mount({
+  'app.js': {
+    file: {
+      contents: `
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello from Express!');
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(\`Server listening on port \${port}\`);
+});
+      `
+    }
+  }
+});
+
     }
   };
   setup();
 }, [webContainer]);
+
 
   useEffect(() => {
 
@@ -386,13 +431,25 @@ function WriteAiMessage(message, isOwn, isAI) {
             </div>
             <div className="actions flex gap-2">
               <button
+              
               onClick={ async ()=>{
-            const LsProcess =  await  webContainer?.spawn('ls')
-           await webContainer.mount(fileTree)
-            LsProcess.output.pipeTo(new WritableStream({
-              write(chunk){
-                console.log(chunk)
-              }}))
+              const installProcess = await webContainer.spawn('npm',['install'])
+             
+             installProcess.output.pipeTo(
+            new WritableStream({
+              write(chunk) {
+                console.log(stripAnsi(chunk));
+              }
+            })
+          );
+               const runProcess = await webContainer.spawn('npm',['start'])
+              runProcess.output.pipeTo(
+              new WritableStream({
+                write(chunk) {
+                  console.log(stripAnsi(chunk));
+                }
+              })
+            );
               }}
               className="p-2 px-4 bg-[#4646467e] text-white "
               >
@@ -402,22 +459,29 @@ function WriteAiMessage(message, isOwn, isAI) {
           </div>
        <div className="bottom flex flex-grow"> 
         {fileTree[currentFile] && (
-        <Editor
-            height="100%"
-            defaultLanguage="javascript"
-            value={fileTree[currentFile]?.file?.contents || ""}
-            onChange={(value) => {
-              setFileTree({
-                ...fileTree,
-                [currentFile]: {
-                  file: {
-                    contents: value || "",
-                  },
-                },
-              });
-            }}
-           theme="vs-dark"
-         />
+
+          
+       <Editor
+  height="100%"
+  defaultLanguage="javascript"
+  value={
+    fileTree[currentFile]?.file?.contents
+      ? fileTree[currentFile].file.contents.replace(/\\n/g, "\n")
+      : ""
+  }
+  onChange={(value) => {
+    setFileTree({
+      ...fileTree,
+      [currentFile]: {
+        file: {
+          contents: value || "",
+        },
+      },
+    });
+  }}
+  theme="vs-dark"
+/>
+
 
         )}
        </div>

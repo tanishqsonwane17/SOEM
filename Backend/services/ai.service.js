@@ -33,7 +33,7 @@ FILE TREE FORMAT:
 "fileTree": {
   "<relative/path/filename>": {
     "file": {
-      "contents": "<file contents as a single JSON string (escape all newlines with \\\\n and quotes with \\\")>"
+      "contents": "<entire file contents as a JSON string (all newlines escaped with \\\\n and all quotes escaped with \\\")>"
     }
   }
 }
@@ -72,7 +72,10 @@ Example 1:
 Example 2:
 { "text": "Hello, how can I help you today?" }
 
-IMPORTANT : don't use file name like routes/index.js
+IMPORTANT:
+- Always escape file contents properly.
+- Do not use file paths like routes/index.js.
+
 `
 
 });
