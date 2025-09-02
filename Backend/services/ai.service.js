@@ -14,7 +14,8 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
    model: 'gemini-1.5-flash',
   generationConfig:{
- responseMimeType:'application/json'
+ responseMimeType:'application/json',
+ temperature: 0.4
   },
 systemInstruction: `
 You are an expert MERN stack developer with 10+ years of experience.

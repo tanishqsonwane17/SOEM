@@ -32,6 +32,7 @@ const Project = () => {
   const { user } = useContext(UserContext);
  const [fileTree, setFileTree] = useState({ })
 const [currentFile, setCurrentFile] = useState(null)
+const [iframe, setIFrame] = useState(null)
 const [openFiles, setopenFiles] = useState([])
   const bottomRef = useRef(null);
 const [webContainer, setWebContainer] = useState(null)
@@ -65,48 +66,7 @@ useEffect(() => {
       const container = await initializeWebContainer();
       setWebContainer(container);
       console.log("WebContainer started");
-
-      // 🔥 Yaha mount karo default project structure
-      await container.mount({
-        'package.json': {
-          file: {
-            contents: JSON.stringify({
-              name: "my-app",
-              version: "1.0.0",
-              scripts: {
-                start: "node index.js"
-              },
-              dependencies: {
-                express: "^4.18.2"
-              }
-            }, null, 2) // null,2 se JSON pretty format ho jaega
-          }
-        },
-        'index.js': {
-          file: {
-            contents: `console.log("Server running...")`
-          }
-        }
-      });
-      await webContainer.mount({
-  'app.js': {
-    file: {
-      contents: `
-const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('Hello from Express!');
-});
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(\`Server listening on port \${port}\`);
-});
-      `
-    }
-  }
-});
+  
 
     }
   };
@@ -431,36 +391,52 @@ function WriteAiMessage(message, isOwn, isAI) {
             </div>
             <div className="actions flex gap-2">
               <button
-              
-              onClick={ async ()=>{
-              const installProcess = await webContainer.spawn('npm',['install'])
-             
-             installProcess.output.pipeTo(
-            new WritableStream({
-              write(chunk) {
-                console.log(stripAnsi(chunk));
-              }
-            })
-          );
-               const runProcess = await webContainer.spawn('npm',['start'])
-              runProcess.output.pipeTo(
-              new WritableStream({
-                write(chunk) {
-                  console.log(stripAnsi(chunk));
-                }
-              })
-            );
-              }}
-              className="p-2 px-4 bg-[#4646467e] text-white "
-              >
-               <VscRunAll/>
-              </button>
+  onClick={async () => {
+    // Mount files
+    await webContainer.mount(fileTree);
+
+    // Step 1: Run install
+    const installProcess = await webContainer.spawn("npm", ["install"]);
+
+    installProcess.output.pipeTo(
+      new WritableStream({
+        write(chunk) {
+          console.log("install:", stripAnsi(chunk));
+        },
+      })
+    );
+
+    webContainer.on('server-ready',(port,url)=>{
+      console.log(port,url)
+      setIFrame(url)
+    })
+
+    const exitCode = await installProcess.exit;
+    if (exitCode !== 0) {
+      console.error(" npm install failed");
+      return;
+    }
+    console.log(" Dependencies installed!");
+
+    const runProcess = await webContainer.spawn("npm", ["start"]);
+
+    runProcess.output.pipeTo(
+      new WritableStream({
+        write(chunk) {
+          console.log("start:", stripAnsi(chunk));
+        },
+      })
+    );
+  }}
+  className="p-2 px-4 bg-[#4646467e] text-white "
+>
+  <VscRunAll />
+</button>
+
             </div>
           </div>
        <div className="bottom flex flex-grow"> 
         {fileTree[currentFile] && (
-
-          
        <Editor
   height="100%"
   defaultLanguage="javascript"
@@ -487,6 +463,8 @@ function WriteAiMessage(message, isOwn, isAI) {
        </div>
       </div>
         )}
+
+        {iframe && webContainer && <iframe src={iframe} className="w-1/2 h-full"></iframe>}
        </section>
 
     </main>
