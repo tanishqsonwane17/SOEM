@@ -5,13 +5,13 @@ import cors from 'cors';
 import cookieParser  from 'cookie-parser'
 import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js';
-import dbConnection from './db/db.js';
+;
 import projectRoutes from './routes/project.routes.js';
 import airRoutes from './routes/ai.routes.js';
 const app = express();
 
 app.use(cookieParser());
-dbConnection();
+
 
 app.use(cors());
 app.use(morgan('dev'));
