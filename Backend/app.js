@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello SOEN!');
 });
 app.use('/projects', projectRoutes);
 app.use('/ai', airRoutes);
