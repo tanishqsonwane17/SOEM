@@ -11,7 +11,7 @@ const Register = () => {
     const { setUser } = useContext(UserContext)
   function handleSubmit(e) {
     e.preventDefault()
-    axios.post('/users/register', {
+    axios.post('https://soen-1-r9s4.onrender.com/users/register', {
       email,
       password
     }).then((response) => {
