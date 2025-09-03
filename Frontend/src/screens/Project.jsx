@@ -159,7 +159,7 @@ function WriteAiMessage(message, isOwn, isAI) {
 
   return (
     <div
-      className={`overflow-auto p-2 rounded-md ${
+      className={` overflow-y-hidden  p-2 rounded-md ${
         isOwn
           ? "bg-gray-200 text-black"
           : isAI
@@ -464,17 +464,7 @@ function WriteAiMessage(message, isOwn, isAI) {
       </div>
         )}
 
-        {iframe && webContainer &&
-        (<div className="flex flex-col h-full">
-          <input type="text"
-          value={iframe} className="w-full p-2 px-4 bg-slate-300"
-          onChange={(e) => setIFrame(e.target.value)}
-          />
-           <iframe src={iframe} className="w-1/2 h-full"></iframe>
-        </div>)
-       
-        
-        }
+        {iframe && webContainer && <iframe src={iframe} className="w-1/2 h-full"></iframe>}
        </section>
 
     </main>
