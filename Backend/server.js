@@ -101,10 +101,10 @@ io.on('connection', (socket) => {
       
 
     } catch (error) {
-      console.error("🔥 Error in project-message handler:", error.message || error);
+      console.error(" Error in project-message handler:", error.message || error);
 
       io.to(socket.roomId).emit('project-message', {
-        message: '❌ Something went wrong while processing your message.',
+        message: ' Something went wrong while processing your message.',
         sender: {
           id: 'system',
           email: 'Server',
