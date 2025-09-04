@@ -25,44 +25,44 @@ export const getAllProjects = async (userId) => {
     })
     return projects
 }
-export const addUserToProject = async ({
-    projectId,
-    users,
-    userId
-}) => {
-    if(!projectId){
+
+
+export const addUserToProject = async ({ projectId, users }) => {
+    if (!projectId) {
         throw new Error("Project ID is required");
     }
-    if(!mongoose.Types.ObjectId.isValid(projectId)){
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
         throw new Error("Invalid Project ID");
     }
-    if(!users){
+    if (!users || !Array.isArray(users) || users.length === 0) {
         throw new Error("Users are required and must be a non-empty array");
     }
-    if(!Array.isArray(users) || users.some(userId => !mongoose.Types.ObjectId.isValid(userId))) {
+    if (users.some(userId => !mongoose.Types.ObjectId.isValid(userId))) {
         throw new Error("Each user must be a valid User ID");
     }
 
-    const project = await ProjectModel.findOne({
-        _id: projectId,
-        users:userId
-    });
-    if(!project){
-        throw new Error('User not belong to this project')
+    // ✅ Sirf project check karo
+    const project = await ProjectModel.findById(projectId);
+    if (!project) {
+        throw new Error("Project not found");
     }
-    const updatedProject = await ProjectModel.findOneAndUpdate({
-        _id:projectId,
-    },{
-        $addToSet:{
-            users:{
-                $each:users
+
+    // ✅ Ab naya user add karo (duplicate avoid using $addToSet)
+    const updatedProject = await ProjectModel.findByIdAndUpdate(
+        projectId,
+        {
+            $addToSet: {
+                users: { $each: users }
             }
-        }
-    },{
-        new:true
-    })
- return updatedProject
-}
+        },
+        { new: true }
+    );
+
+    return updatedProject;
+};
+
+
+
 export const getProjectById = async (projectId) => {
     if(!projectId){
         throw new Error("Project ID is required");
