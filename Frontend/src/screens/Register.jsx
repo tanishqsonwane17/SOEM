@@ -24,9 +24,9 @@ const Register = () => {
     })
   }
   return (
-<>
-       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="bg-gray-900 shadow-xl rounded-xl p-8 w-full max-w-md">
+   <>
+     <div className="min-h-screen flex items-center justify-center bg-[#323232]">
+        <div className="bg-[#414141] shadow-xl rounded-xl p-8 w-full max-w-md">
             <h2 className="text-3xl font-bold text-white mb-6 text-center">Create a new account</h2>
             <form className="space-y-5"
             onSubmit={handleSubmit}
@@ -36,11 +36,11 @@ const Register = () => {
                         Email
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 rounded-lg  text-white border border-[#e6e6e6] focus:outline-none  "
                         type="email"
                         id="email"
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@example.com"
+                        placeholder="email"
                         autoComplete="email"
                         required
                     />
@@ -50,7 +50,7 @@ const Register = () => {
                         Password
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 rounded-lg text-white border border-[#e6e6e6] focus:outline-none "
                         type="password"
                         id="password"
                         onChange={(e) => setPassword(e.target.value)}
@@ -61,16 +61,14 @@ const Register = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
-                >
+                    className="w-full py-3 cursor-pointer text-[17px] tracking-wide hover:bg-[#1f1f1f] rounded-lg bg-black text-white font-semibold transition-colors">
                     Create Account
                 </button>
             </form>
             <div className="mt-6 text-center">
                 <span className="text-gray-400">Don't have an account? </span>
                 <NavLink to={'/login'}
-                    className="text-blue-400 hover:underline font-medium"
-                >
+                    className="text-[#e6e6e6] hover:underline font-medium" >
                     Already have an account? 
                 </NavLink>
             </div>

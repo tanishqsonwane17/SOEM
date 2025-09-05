@@ -36,7 +36,7 @@ const Login = () => {
                         Email
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
+                        className="w-full px-4 py-3 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
                         type="email"
                         id="email"
                         onChange={(e) => setEmail(e.target.value)}
@@ -50,7 +50,7 @@ const Login = () => {
                         Password
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
+                        className="w-full px-4 py-3 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
                         type="password"
                         onChange={(e) => setPassword(e.target.value)}
                         id="password"
@@ -61,9 +61,9 @@ const Login = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full py-2 rounded-xl bg-black cursor-pointer text-white font-semibold transition-colors"
+                    className="w-full py-3 rounded-xl text-[18px] bg-black cursor-pointer text-white font-semibold transition-colors"
                 >
-                    Sign In
+                   Sign in
                 </button>
             </form>
             <div className="mt-6 text-center">
