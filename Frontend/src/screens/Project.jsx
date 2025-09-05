@@ -199,7 +199,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         </header>
         {/* Chat Section */}
         <div className="flex flex-col justify-between flex-grow h-[90%]">
-<div className="message-box flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
+        <div className="message-box flex-grow overflow-y-auto p-4 space-y-3 scrollbar-hide">
          {chatMessages.map((msg, index) => {
            const isOwn =
              msg.sender === user._id ||
@@ -356,7 +356,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         )}
       </section>
      <section className="right h-full w-full flex-grow flex  bg-[#282828]">
-      <div className="explorer h-full pt-10 min-w-52 max-w-64 bg-[#262626]">
+      <div className="explorer h-full pt-1 min-w-52 max-w-64 bg-[#262626]">
             {Object.keys(fileTree).map((file, index) => (
               <button
                 key={index}
@@ -366,29 +366,32 @@ function WriteAiMessage(message, isOwn, isAI) {
                     setopenFiles(prev => [...prev, file]);
                   }
                 }}
-                className="treeElem cursor-pointer flex items-center bg-[#282828] text-white w-full"
+                className="treeElem cursor-pointer px-1 flex items-center bg-[#282828] text-white w-full"
               >
                 <p 
-                className="font-semibold active:bg-[#272727] bg-[#1d1d1d7e] flex items-center justify-center h-10  w-full ">{file}</p>
+                className="font-semibold active:bg-[#272727] bg-[#1d1d1d7e] flex items-center mt-1 border-b-[1px] border-[#939393]  justify-center h-14 w-full ">{file}</p>
               </button>
             ))}
       </div>
       {currentFile && (
       <div className="codeEditor flex flex-col flex-grow h-full">
-          <div className="top justify-between  flex bg-[#1d1d1d7e] w-full gap-[1px]">
-            <div className="files flex">
-            {openFiles.map((file, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentFile(file)} 
-                className={`open-file cursor-pointer p-2 flex items-center px-4 gap-2 w-full ${
-                  currentFile === file ? "bg-[#262626] flex justify-center text-white"  : "bg-[#262626] flex justify-center text-white"
-                }`}
-              >
-                <p className="font-semibold">{file}</p>
-              </button>
-            ))}
-            </div>
+          <div className="top justify-between  flex  w-full gap-[1px]">
+            <div className="flex w-full py-4 border-b-1 ">
+  {openFiles.map((file, index) => (
+    <button
+      key={index}
+      onClick={() => setCurrentFile(file)}
+      className={`open-file cursor-pointer border-r border-r-[#939393] flex justify-center items-center px-4 gap-2 flex-1 ${
+        currentFile === file
+          ? "bg-[#262626] text-white"
+          : "bg-[#262626] text-white"
+      }`}
+    >
+      <p className="font-semibold text-center break-words">{file}</p>
+    </button>
+  ))}
+</div>
+
             <div className="actions flex gap-2">
               <button
   onClick={async () => {
@@ -457,7 +460,6 @@ function WriteAiMessage(message, isOwn, isAI) {
   }}
   theme="vs-dark"
 />
-
 
         )}
        </div>
