@@ -161,10 +161,10 @@ function WriteAiMessage(message, isOwn, isAI) {
     <div
       className={` overflow-y-hidden  p-2 rounded-md ${
         isOwn
-          ? "bg-gray-200 text-black"
+          ? "bg-[#454545] text-white"
           : isAI
           ? "bg-[#38383897] text-white"
-          : "bg-gray-100 text-black"
+          : "bg-[#515050] text-black"
       }`}
     >
       <Markdown
@@ -211,32 +211,36 @@ function WriteAiMessage(message, isOwn, isAI) {
 
              return (
                 <div
-                 key={index}
-                 className={`${
-                   isOwn
-                     ? "ml-auto max-w-[80%]"
-                     : isAI
-                     ? "mr-auto max-w-96"
-                     : "mr-auto  max-w-[70%]"
-                 } break-words  whitespace-pre-wrap overflow-hidden rounded-md`}
-               >
-             <div
-               className={`p-1  rounded-md shadow-md ${
-                 isOwn
-                   ? "bg-[#515151] text-white"
-                   : isAI
-                   ? "bg-[#595959] text-black"
-                   : "bg-[#a3a3a367] text-black"
-               }`}
-             >
-               <small className="text-xs text-gray-200 font-bold">
-                 {isOwn ? "You" : msg.sender?.email || "Unknown"}
-               </small>
-             
-               {WriteAiMessage(msg.message, isOwn, isAI)}
-             
-             </div>
-             </div>
+  key={index}
+  className={`${
+    isOwn
+      ? "ml-auto max-w-[80%]"
+      : isAI
+      ? "mr-auto max-w-96"
+      : "mr-auto max-w-[70%]"
+  } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
+>
+  <div
+    className={`p-2 rounded-md shadow-md ${
+      isOwn
+        ? "!bg-[#515151] text-white"
+        : isAI
+        ? "!bg-[#595959] text-white"
+        : "!bg-[#a3a3a367] text-black"
+    }`}
+  >
+    <small className="text-xs text-gray-200 font-bold">
+      {isOwn ? "You" : msg.sender?.email || "Unknown"}
+    </small>
+
+    {/* Yaha test karke dekho */}
+    {/* Agar WriteAiMessage bg white kar raha hai to replace with simple text */}
+    <div className="mt-1 break-words">
+      {WriteAiMessage ? WriteAiMessage(msg.message, isOwn, isAI) : msg.message}
+    </div>
+  </div>
+</div>
+
            );
          })}
             <div ref={bottomRef}></div>
