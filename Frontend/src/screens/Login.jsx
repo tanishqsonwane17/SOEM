@@ -25,8 +25,8 @@ const Login = () => {
 
   return (
    <>
-       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-        <div className="bg-gray-900 shadow-xl rounded-xl p-8 w-full max-w-md">
+       <div className="min-h-screen flex items-center justify-center bg-[#323232]">
+        <div className="bg-[#414141] shadow-xl rounded-xl p-8 w-full max-w-md">
             <h2 className="text-3xl font-bold text-white mb-6 text-center">Sign in to your account</h2>
             <form className="space-y-5"
             onSubmit={handleSubmit}
@@ -36,7 +36,7 @@ const Login = () => {
                         Email
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
                         type="email"
                         id="email"
                         onChange={(e) => setEmail(e.target.value)}
@@ -50,7 +50,7 @@ const Login = () => {
                         Password
                     </label>
                     <input
-                        className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none"
                         type="password"
                         onChange={(e) => setPassword(e.target.value)}
                         id="password"
@@ -61,16 +61,15 @@ const Login = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+                    className="w-full py-2 rounded-xl bg-black cursor-pointer text-white font-semibold transition-colors"
                 >
                     Sign In
                 </button>
             </form>
             <div className="mt-6 text-center">
-                <span className="text-gray-400">Don't have an account? </span>
+                <span className="text-gray-300">Don't have an account? </span>
                 <NavLink to={'/register'}
-                    className="text-blue-400 hover:underline font-medium"
-                >
+                    className="text-white hover:underline font-medium">
                     Create a new account
                 </NavLink>
             </div>
