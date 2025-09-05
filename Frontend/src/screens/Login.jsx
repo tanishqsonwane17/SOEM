@@ -28,9 +28,9 @@ const Login = () => {
 
   return (
    <>
-     <div className="min-h-screen flex items-center justify-center bg-[#323232]">
-        <div className="bg-[#414141] shadow-xl rounded-xl p-8 w-full max-w-md">
-            <h2 className="text-3xl font-bold text-white mb-6 text-center">Sign in to your account</h2>
+     <div className="min-h-screen flex items-center justify-center bg-[#202020]">
+        <div className="bg-[#2d2d2d] shadow-xl rounded-xl p-8 w-full max-w-md">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">sign in to your account</h2>
             
             <form className="space-y-5" onSubmit={handleSubmit}>
                 {/* Email */}
@@ -55,7 +55,7 @@ const Login = () => {
                     </label>
                     <div className="relative">
                       <input
-                          className="w-full px-4 py-3 rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none pr-10"
+                          className="w-full px-4 py-3  rounded-lg text-white border border-[#e6e6e6a8] focus:outline-none pr-10"
                           type={showPassword ? "text" : "password"}  // 👈 toggle here
                           onChange={(e) => setPassword(e.target.value)}
                           id="password"
@@ -76,7 +76,7 @@ const Login = () => {
                 {/* Submit button */}
                 <button
                     type="submit"
-                    className="w-full py-3 rounded-xl text-[18px] bg-black cursor-pointer text-white font-semibold transition-colors">
+                    className="w-full  hover:bg-[#1d1d1d]  py-3 rounded-xl text-[18px] bg-black cursor-pointer text-white font-semibold transition-colors">
                    Sign in
                 </button>
             </form>
