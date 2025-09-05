@@ -10,7 +10,7 @@ const Login = () => {
    const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
-    axios.post('/users/login', {
+    await axios.post('/users/login', {
       email,
       password
     }).then((response) => {

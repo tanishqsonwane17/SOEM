@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect} from 'react'
 import { UserContext } from '../context/User.contenxt'
 import { FaLink } from "react-icons/fa6"
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axiosInstance from '../config/Axios'
 import { MdPeopleAlt } from "react-icons/md";
 
@@ -38,9 +38,8 @@ useEffect(() => {
         <div className="projects flex gap-4 flex-wrap">
           <button
             onClick={() => setisModal(true)}
-            className="project p-4 flex gap-2 border border-slate-400 rounded-md cursor-pointer"
-          >
-            <span className='text-md'>New Project</span>
+            className="project p-4 flex gap-2 border border-slate-400 rounded-md cursor-pointer">
+            <Link to={'/create-project'} className='text-md'>New Project</Link>
             <FaLink />
           </button>
           {

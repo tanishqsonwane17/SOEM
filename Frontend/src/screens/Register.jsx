@@ -9,9 +9,9 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
     const { setUser } = useContext(UserContext)
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    axios.post('/users/register', {
+    await axios.post('/users/register', {
       email,
       password
     }).then((response) => {
