@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { RxCross1 } from "react-icons/rx";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoMdSend } from "react-icons/io";
 import axiosInstance from "../config/Axios";
@@ -187,7 +188,7 @@ function WriteAiMessage(message, isOwn, isAI) {
             className="flex gap-1 cursor-pointer"
             onClick={() => setIsModalOpen(true)}
           >
-            <i className="ri-user-add-line mr-1"></i>
+            <i className="ri-user-add-line mr-1 "></i>
             <p>Add Collaborator</p>
           </button>
           <button
@@ -303,38 +304,36 @@ function WriteAiMessage(message, isOwn, isAI) {
             className="fixed inset-0 z-50 flex items-center justify-center"
             style={{ background: "rgba(0,0,0,0.15)" }}
           >
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative flex flex-col">
+            <div className="bg-[#3b3a3a88] text-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative flex flex-col">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Select Users</h2>
+                <h2 className="text-xl text-white font-semibold">Select Users</h2>
                 <button
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-200 text-4xl flex justify-center items-center cursor-pointer hover:bg-[#3d3d3db4] hover:text-gray-200 w-12 rounded-full h-12  "
                   onClick={() => setIsModalOpen(false)}
                 >
-                  &times;
+                  <RxCross1 className="text-2xl" />
                 </button>
               </div>
 
-              <ul className="overflow-y-auto" style={{ maxHeight: "45vh" }}>
-                {users.map((user) => (
-                  <li
-                    key={user._id}
-                    className={`flex items-center gap-3 p-3 rounded-md cursor-pointer ${
-                      selectedUserId.includes(user._id) ? "bg-slate-200" : ""
-                    } hover:bg-slate-200 transition`}
-                    onClick={() => handleUserSelect(user._id)}
-                  >
-                    <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                      <i className="ri-user-3-fill text-gray-600"></i>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">{user.email}</h3>
-                      <small className="text-xs text-gray-500">
-                        {user.email}
-                      </small>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+             <ul className="overflow-y-scroll scrollbar-hide" style={{ maxHeight: "45vh" }}>
+             {users.map((user) => (
+               <li
+                 key={user._id}
+                 className={`flex items-center gap-3 p-3 rounded-md cursor-pointer ${
+                   selectedUserId.includes(user._id) ? "bg-slate-200" : ""
+                 } hover:bg-[#3d3d3db4] transition`}
+                 onClick={() => handleUserSelect(user._id)} >
+                 <div className="h-8 w-8 rounded-full bg-[#1f1f1f] flex items-center justify-center">
+                 <i className="ri-user-3-fill text-gray-100"></i>
+                 </div>
+                 <div>
+                   <h3 className="font-medium">{user.email}</h3>
+                   <small className="text-xs text-gray-500">{user.email}</small>
+                 </div>
+               </li>
+             ))}
+           </ul>
+
 
               {selectedUserId.length > 0 && (
                 <div className="mt-4 text-sm text-green-600 space-y-1">

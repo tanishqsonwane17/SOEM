@@ -57,7 +57,6 @@ io.use(async (socket, next) => {
   }
 });
 
-// Socket event handling
 io.on('connection', (socket) => {
   socket.roomId = socket.project._id.toString();
   socket.join(socket.roomId);
