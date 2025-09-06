@@ -265,7 +265,7 @@ function WriteAiMessage(message, isOwn, isAI) {
         </div>
 
         <div>   
-       <div className={`absolute top-0 left-0 h-full w-full bg-[#484848f8] z-50 transition-transform duration-300 ease-in-out ${
+       <div className={`absolute top-0 left-0 h-full w-full bg-[#343434f8] z-50 transition-transform duration-300 ease-in-out ${
             issidePanelOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -309,8 +309,7 @@ function WriteAiMessage(message, isOwn, isAI) {
                 <h2 className="text-xl text-white font-semibold">Select Users</h2>
                 <button
                   className="text-gray-200 text-4xl flex justify-center items-center cursor-pointer hover:bg-[#3d3d3db4] hover:text-gray-200 w-12 rounded-full h-12  "
-                  onClick={() => setIsModalOpen(false)}
-                >
+                  onClick={() => setIsModalOpen(false)} >
                   <RxCross1 className="text-2xl" />
                 </button>
               </div>

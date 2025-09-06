@@ -15,6 +15,7 @@ export const createUserController = async (req, res) => {
     });
 
     const token = user.generateAuthToken();
+    res.cookie("token", token);
     delete user._doc.password;
     res.status(201).json({ user, token });
   } catch (error) {
@@ -37,6 +38,7 @@ export const loginUserController = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = user.generateAuthToken();
+    res.cookie("token", token);
     delete user._doc.password;
     res.cookie("token", token);
     res.status(200).json({ user, token });
