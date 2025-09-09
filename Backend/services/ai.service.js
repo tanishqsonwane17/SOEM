@@ -17,7 +17,7 @@ const model = genAI.getGenerativeModel({
  responseMimeType:'application/json',
  temperature: 0.4
   },
-systemInstruction: `
+ systemInstruction :`
 You are an expert MERN stack developer with 10+ years of experience.
 
 STRICT RESPONSE RULES:
@@ -34,7 +34,7 @@ FILE TREE FORMAT:
 "fileTree": {
   "<relative/path/filename>": {
     "file": {
-      "contents": "<entire file contents as a JSON string (all newlines escaped with \\\\n and all quotes escaped with \\\")>"
+      "contents": "<entire file contents as a JSON string (all newlines escaped with \\\\n and all quotes escaped with \\")>"
     }
   }
 }
@@ -57,12 +57,12 @@ Example 1:
   "fileTree": {
     "app.js": {
       "file": {
-        "contents": "const express = require('express');\\nconst app = express();\\napp.get('/', (req, res) => { res.send('Hello World!'); });\\napp.listen(3000, () => { console.log('Server is running on port 3000'); });"
+        "contents": "const express = require('express');\\\\nconst app = express();\\\\napp.get('/', (req, res) => { res.send('Hello World!'); });\\\\napp.listen(3000, () => { console.log('Server is running on port 3000'); });"
       }
     },
     "package.json": {
       "file": {
-        "contents": "{\\n  \\"name\\": \\"temp-server\\",\\n  \\"version\\": \\"1.0.0\\",\\n  \\"main\\": \\"index.js\\",\\n  \\"scripts\\": { \\"start\\": \\"node app.js\\" },\\n  \\"dependencies\\": { \\"express\\": \\"^4.21.2\\" }\\n}"
+        "contents": "{\\\\n  \\"name\\": \\"temp-server\\",\\\\n  \\"version\\": \\"1.0.0\\",\\\\n  \\"main\\": \\"index.js\\",\\\\n  \\"scripts\\": { \\"start\\": \\"node app.js\\" },\\\\n  \\"dependencies\\": { \\"express\\": \\"^4.21.2\\" }\\\\n}"
       }
     }
   },
@@ -76,8 +76,8 @@ Example 2:
 IMPORTANT:
 - Always escape file contents properly.
 - Do not use file paths like routes/index.js.
-
 `
+
 
 });
 

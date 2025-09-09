@@ -221,8 +221,7 @@ function WriteAiMessage(message, isOwn, isAI) {
       : isAI
       ? "mr-auto max-w-96"
       : "mr-auto max-w-[70%]"
-  } break-words whitespace-pre-wrap overflow-hidden rounded-md`}
->
+  } break-words whitespace-pre-wrap overflow-hidden rounded-md`}>
   <div
     className={`p-2 rounded-md shadow-md ${
       isOwn
@@ -405,12 +404,19 @@ function WriteAiMessage(message, isOwn, isAI) {
   {status && (
     <div className="text-xs text-gray-300 font-mono">{status}</div>
   )}
-  <button
-    onClick={() => webContainer.reload()}
-    className="p-2 px-4 bg-[#4646467e] text-white "
-  >
-    See
-  </button>
+ <button
+  onClick={() => {
+    if (iframe) {
+      setShowOutput(true);
+    } else {
+      setStatus("⚠️ No server running yet. Run project first.");
+    }
+  }}
+  className="p-2 px-4 bg-[#4646467e] text-white "
+>
+  See
+</button>
+
 </div>
 
 <button
