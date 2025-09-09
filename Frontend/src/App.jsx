@@ -3,7 +3,7 @@ import AppRoutes from './Routes/AppRoutes'
 import { UserProvider } from './context/User.contenxt'
 const App = () => {
   return (
-    <div>
+    <div className='overflow-y-hidden'>
       <UserProvider>
          <AppRoutes />
       </UserProvider>

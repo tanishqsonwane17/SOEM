@@ -11,6 +11,7 @@ import { initializeWebContainer } from "../config/WebContainers";
 import { VscRunAll } from "react-icons/vsc";
 import stripAnsi from "strip-ansi";
 import '../App.css'
+import '../css/Project.css'
 import {
   initializeSocket,
   receiveMessage,
@@ -23,6 +24,8 @@ const Project = () => {
     ? location.state.project[0]
     : location.state?.project;
   const [project, setProject] = useState(initialProject);
+  const [status, setStatus] = useState(""); 
+const [showOutput, setShowOutput] = useState(false);
   const [issidePanelOpen, setissidePanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState([]);
@@ -397,48 +400,67 @@ function WriteAiMessage(message, isOwn, isAI) {
 </div>
 
             <div className="actions flex gap-2">
-              <button
+
+              <div className="actions flex flex-col items-center gap-2">
+  {status && (
+    <div className="text-xs text-gray-300 font-mono">{status}</div>
+  )}
+  <button
+    onClick={() => webContainer.reload()}
+    className="p-2 px-4 bg-[#4646467e] text-white "
+  >
+    See
+  </button>
+</div>
+
+<button
   onClick={async () => {
-    // Mount files
-    await webContainer.mount(fileTree);
+    try {
+      setStatus("Mounting files...");
+      await webContainer.mount(fileTree);
 
-    // Step 1: Run install
-    const installProcess = await webContainer.spawn("npm", ["install"]);
+      setStatus("Installing dependencies...");
+      const installProcess = await webContainer.spawn("npm", ["install"]);
+      installProcess.output.pipeTo(
+        new WritableStream({
+          write(chunk) {
+            console.log("install:", stripAnsi(chunk));
+          },
+        })
+      );
 
-    installProcess.output.pipeTo(
-      new WritableStream({
-        write(chunk) {
-          console.log("install:", stripAnsi(chunk));
-        },
-      })
-    );
+      const exitCode = await installProcess.exit;
+      if (exitCode !== 0) {
+        setStatus("❌ Installation failed");
+        return;
+      }
 
-    webContainer.on('server-ready',(port,url)=>{
-      console.log(port,url)
-      setIFrame(url)
-    })
+      setStatus("Starting server...");
+      const runProcess = await webContainer.spawn("npm", ["start"]);
+      runProcess.output.pipeTo(
+        new WritableStream({
+          write(chunk) {
+            console.log("start:", stripAnsi(chunk));
+          },
+        })
+      );
 
-    const exitCode = await installProcess.exit;
-    if (exitCode !== 0) {
-      console.error(" npm install failed");
-      return;
+      webContainer.on("server-ready", (port, url) => {
+  console.log(port, url);
+  setIFrame(url);
+  setStatus("✅ Server is running - Click 'View Output'");
+});
+
+    } catch (err) {
+      console.error(err);
+      setStatus("❌ Error occurred");
     }
-    console.log(" Dependencies installed!");
-
-    const runProcess = await webContainer.spawn("npm", ["start"]);
-
-    runProcess.output.pipeTo(
-      new WritableStream({
-        write(chunk) {
-          console.log("start:", stripAnsi(chunk));
-        },
-      })
-    );
   }}
   className="p-2 px-4 bg-[#4646467e] text-white "
 >
   <VscRunAll />
 </button>
+
 
             </div>
           </div>
@@ -469,7 +491,14 @@ function WriteAiMessage(message, isOwn, isAI) {
        </div>
       </div>
         )}
-
+        {iframe && !showOutput && (
+  <button
+    onClick={() => setShowOutput(true)}
+    className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700 transition"
+  >
+    View Output
+  </button>
+)}
         {iframe && webContainer && <iframe src={iframe} className="w-1/2 h-full"></iframe>}
        </section>
 
